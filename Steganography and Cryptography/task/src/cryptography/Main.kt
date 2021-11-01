@@ -1,6 +1,8 @@
 package cryptography
 
-fun main() {
-    println("Hello World!")
-}
+import cryptography.console.Runner
 
+fun main() {
+    Runner()
+        .run()
+}
