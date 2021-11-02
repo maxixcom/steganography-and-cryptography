@@ -23,7 +23,11 @@ class CommandFactoryImpl : CommandFactory {
 
     private fun parseHide(input: String): Command? {
         return "^hide$".toRegex().matchEntire(input)?.let {
-            CommandHide
+            println("Input image file:")
+            val inputFile = readLine()!!
+            println("Output image file:")
+            val outputFile = readLine()!!
+            CommandHide(inputFile, outputFile)
         }
     }
 }

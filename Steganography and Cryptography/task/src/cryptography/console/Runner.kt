@@ -9,9 +9,9 @@ import cryptography.console.command.CommandUnknown
 class Runner : Runnable {
     private val appController = Application.appController
     override fun run() {
-        printWelcome()
         main@ while (true) {
             do {
+                printWelcome()
                 val command = enterCommand()
                 when (command) {
                     CommandExit -> break@main

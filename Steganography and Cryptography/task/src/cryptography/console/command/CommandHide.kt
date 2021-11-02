@@ -1,3 +1,6 @@
 package cryptography.console.command
 
-object CommandHide : Command
+class CommandHide(
+    val inputFile: String,
+    val outputFile: String,
+) : Command
