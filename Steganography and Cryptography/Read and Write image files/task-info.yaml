@@ -10,9 +10,6 @@ files:
     }
 
   learner_created: false
-- name: test/testimage.png
-  visible: false
-  learner_created: false
 - name: test/SteganographyTest.kt
   visible: false
   text: |+
@@ -144,6 +141,179 @@ files:
 
     }
 
+  learner_created: false
+- name: src/cryptography/console/command/CommandExit.kt
+  visible: true
+  text: |
+    package cryptography.console.command
+
+    object CommandExit : Command
+  learner_created: true
+- name: src/cryptography/console/command/CommandFactory.kt
+  visible: true
+  text: |
+    package cryptography.console.command
+
+    interface CommandFactory {
+        fun commandFromString(input: String): Command
+    }
+  learner_created: true
+- name: src/cryptography/console/ConsoleHelpers.kt
+  visible: true
+  text: |-
+    package cryptography.console
+
+    fun printWelcome() {
+        println("Task (hide, show, exit):")
+    }
+
+    fun printBye() {
+        println("Bye!")
+    }
+  learner_created: true
+- name: src/cryptography/console/command/CommandShow.kt
+  visible: true
+  text: |
+    package cryptography.console.command
+
+    object CommandShow : Command
+  learner_created: true
+- name: src/cryptography/console/command/Command.kt
+  visible: true
+  text: |
+    package cryptography.console.command
+
+    sealed interface Command
+  learner_created: true
+- name: src/cryptography/console/controller/AppControllerImpl.kt
+  visible: true
+  text: |
+    package cryptography.console.controller
+
+    import cryptography.console.command.CommandHide
+    import cryptography.console.command.CommandShow
+
+    class AppControllerImpl : AppController {
+        override fun show(command: CommandShow) {
+            println("Obtaining message from image.")
+        }
+
+        override fun hide(command: CommandHide) {
+            println("Hiding message in image.")
+        }
+    }
+  learner_created: true
+- name: src/cryptography/console/Application.kt
+  visible: true
+  text: |
+    package cryptography.console
+
+    import cryptography.console.command.CommandFactory
+    import cryptography.console.command.CommandFactoryImpl
+    import cryptography.console.controller.AppController
+    import cryptography.console.controller.AppControllerImpl
+
+    object Application {
+        val commandFactory: CommandFactory = CommandFactoryImpl()
+        val appController: AppController = AppControllerImpl()
+    }
+  learner_created: true
+- name: src/cryptography/console/command/CommandHide.kt
+  visible: true
+  text: |
+    package cryptography.console.command
+
+    object CommandHide : Command
+  learner_created: true
+- name: src/cryptography/console/controller/AppController.kt
+  visible: true
+  text: |
+    package cryptography.console.controller
+
+    import cryptography.console.command.CommandHide
+    import cryptography.console.command.CommandShow
+
+    interface AppController {
+        fun show(command: CommandShow)
+        fun hide(command: CommandHide)
+    }
+  learner_created: true
+- name: src/cryptography/console/command/CommandUnknown.kt
+  visible: true
+  text: |
+    package cryptography.console.command
+
+    object CommandUnknown : Command
+  learner_created: true
+- name: src/cryptography/console/Runner.kt
+  visible: true
+  text: |
+    package cryptography.console
+
+    import cryptography.console.command.Command
+    import cryptography.console.command.CommandExit
+    import cryptography.console.command.CommandHide
+    import cryptography.console.command.CommandShow
+    import cryptography.console.command.CommandUnknown
+
+    class Runner : Runnable {
+        private val appController = Application.appController
+        override fun run() {
+            printWelcome()
+            main@ while (true) {
+                do {
+                    val command = enterCommand()
+                    when (command) {
+                        CommandExit -> break@main
+                        is CommandShow -> appController.show(command)
+                        is CommandHide -> appController.hide(command)
+                        is CommandUnknown -> println("Wrong task: [input String]")
+                    }
+                } while (command == CommandUnknown)
+            }
+            printBye()
+        }
+
+        private fun enterCommand(): Command {
+            return Application.commandFactory.commandFromString(readLine()!!)
+        }
+    }
+  learner_created: true
+- name: src/cryptography/console/command/CommandFactoryImpl.kt
+  visible: true
+  text: |
+    package cryptography.console.command
+
+    class CommandFactoryImpl : CommandFactory {
+        private val commands: List<(String) -> Command?> = listOf(
+            { input -> parseExit(input) },
+            { input -> parseShow(input) },
+            { input -> parseHide(input) },
+        )
+
+        override fun commandFromString(input: String) = commands.firstNotNullOfOrNull { it(input) } ?: CommandUnknown
+
+        private fun parseExit(input: String): Command? {
+            return "^exit$".toRegex().matchEntire(input)?.let {
+                CommandExit
+            }
+        }
+
+        private fun parseShow(input: String): Command? {
+            return "^show$".toRegex().matchEntire(input)?.let {
+                CommandShow
+            }
+        }
+
+        private fun parseHide(input: String): Command? {
+            return "^hide$".toRegex().matchEntire(input)?.let {
+                CommandHide
+            }
+        }
+    }
+  learner_created: true
+- name: test/testimage.png
+  visible: false
   learner_created: false
 feedback_link: https://hyperskill.org/projects/160/stages/831/implement#comment
 status: Unchecked
