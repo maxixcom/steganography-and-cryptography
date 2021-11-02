@@ -17,7 +17,9 @@ class CommandFactoryImpl : CommandFactory {
 
     private fun parseShow(input: String): Command? {
         return "^show$".toRegex().matchEntire(input)?.let {
-            CommandShow
+            println("Input image file:")
+            val inputFile = readLine()!!
+            CommandShow(inputFile)
         }
     }
 
@@ -27,7 +29,9 @@ class CommandFactoryImpl : CommandFactory {
             val inputFile = readLine()!!
             println("Output image file:")
             val outputFile = readLine()!!
-            CommandHide(inputFile, outputFile)
+            println("Message to hide:")
+            val message = readLine()!!
+            CommandHide(message, inputFile, outputFile)
         }
     }
 }

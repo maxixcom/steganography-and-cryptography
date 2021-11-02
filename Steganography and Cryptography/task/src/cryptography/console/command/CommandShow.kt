@@ -1,3 +1,5 @@
 package cryptography.console.command
 
-object CommandShow : Command
+class CommandShow(
+    val inputFile: String,
+) : Command

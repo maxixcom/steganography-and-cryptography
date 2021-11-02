@@ -327,9 +327,6 @@ files:
 - name: src/cryptography/application/gateway/SecretImageImpl.kt
   visible: true
   learner_created: true
-- name: test/N.png
-  visible: true
-  learner_created: true
 - name: test/out.png
   visible: true
   learner_created: true
@@ -338,4 +335,4 @@ status: Solved
 feedback:
   message: Congratulations!
   time: Tue, 02 Nov 2021 15:55:01 UTC
-record: -1
+record: 3

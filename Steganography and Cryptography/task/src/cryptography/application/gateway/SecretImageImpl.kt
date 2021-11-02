@@ -1,18 +1,65 @@
 package cryptography.application.gateway
 
+import cryptography.application.extensions.pixelForIndex
 import cryptography.domain.gateway.SecretImage
 import java.awt.image.BufferedImage
 
 class SecretImageImpl : SecretImage {
-    override fun hide(input: BufferedImage): BufferedImage {
-        val output = BufferedImage(input.width, input.height, BufferedImage.TYPE_INT_RGB)
-        // When the input image is read, the least significant bit for each color (Red, Green, and Blue)
-        // is set to 1. The resulting image will be saved with the provided output image filename in the PNG format.
-        for (x in 0 until input.width) {
-            for (y in 0 until input.height) {
-                output.setRGB(x, y, input.getRGB(x, y) or 0x010101)
+    companion object {
+        val EOM = listOf<Byte>(0, 0, 3)
+    }
+
+    override fun show(input: BufferedImage): String {
+        val totalPixels = input.width * input.height
+
+        val data = mutableListOf<Byte>()
+        var index = 0
+        while (index < totalPixels) {
+            var bins = ""
+            for (n in 0..7) {
+                val pixel = input.pixelForIndex(index)
+                val rgb = input.getRGB(pixel.x, pixel.y)
+                bins += (rgb and 1).toString(2)
+                index++
+            }
+            data.add(bins.toByte(2))
+            if (data.size > 2) {
+                if (data.takeLast(3) == EOM) {
+                    break
+                }
             }
         }
+        return data.subList(0, data.size - EOM.size).toByteArray().toString(Charsets.UTF_8)
+    }
+
+    override fun hide(message: String, input: BufferedImage): BufferedImage {
+        val data = message.encodeToByteArray().toMutableList()
+        data.addAll(EOM) // End of message
+        val requiredPixels = data.size * 8
+        val totalPixels = input.width * input.height
+
+        if (requiredPixels > totalPixels) {
+            throw Exception("The input image is not large enough to hold this message.")
+        }
+
+        val output = BufferedImage(input.width, input.height, BufferedImage.TYPE_INT_RGB)
+
+        var index = 0
+        for (byte in data) {
+            val b = "%08d".format(byte.toString(2).toInt())
+            b.map { it.digitToInt() }
+                .forEach {
+                    val pixel = input.pixelForIndex(index)
+                    val rgb = input.getRGB(pixel.x, pixel.y)
+                    output.setRGB(pixel.x, pixel.y, rgb and 0xFFFFFE or it)
+                    index++
+                }
+        }
+        (index until totalPixels).forEach { i ->
+            val pixel = input.pixelForIndex(i)
+            output.setRGB(pixel.x, pixel.y, input.getRGB(pixel.x, pixel.y))
+        }
+
         return output
     }
 }

@@ -1,7 +1,6 @@
 package cryptography.domain.usecase
 
 import cryptography.domain.gateway.SecretImage
-import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -14,7 +13,8 @@ class HideImpl(
             if (!inputFile.exists() || !inputFile.isFile) {
                 throw Exception("Can't read input file!")
             }
-            val outputImage = secretImage.hide(ImageIO.read(inputFile))
+
+            val outputImage = secretImage.hide(request.message, ImageIO.read(inputFile))
 
             ImageIO.write(outputImage, "png", File(request.outputFile))
         }
