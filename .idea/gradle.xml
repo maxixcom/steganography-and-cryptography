@@ -8,7 +8,6 @@
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="11" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -18,6 +17,9 @@
             <option value="$PROJECT_DIR$/Topics/Image libraries/Drawing three strings" />
             <option value="$PROJECT_DIR$/Topics/Image libraries/Drawing two lines" />
             <option value="$PROJECT_DIR$/Topics/Image libraries/Theory" />
+            <option value="$PROJECT_DIR$/Topics/Relational operators/Check the sum" />
+            <option value="$PROJECT_DIR$/Topics/Relational operators/Check the value" />
+            <option value="$PROJECT_DIR$/Topics/Relational operators/Theory" />
             <option value="$PROJECT_DIR$/Topics/The main() function/Change program arguments" />
             <option value="$PROJECT_DIR$/Topics/The main() function/Fix the program" />
             <option value="$PROJECT_DIR$/Topics/The main() function/Printing arguments" />

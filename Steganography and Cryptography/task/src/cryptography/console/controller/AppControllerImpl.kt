@@ -11,6 +11,7 @@ class AppControllerImpl(
 ) : AppController {
     override fun show(command: CommandShow) {
         val request = Show.Request(
+            password = command.password,
             inputFile = command.inputFile
         )
         useCaseShow.execute(request).result.fold(
@@ -26,6 +27,7 @@ class AppControllerImpl(
     override fun hide(command: CommandHide) {
         val request = Hide.Request(
             message = command.message,
+            password = command.password,
             inputFile = command.inputFile,
             outputFile = command.outputFile,
         )

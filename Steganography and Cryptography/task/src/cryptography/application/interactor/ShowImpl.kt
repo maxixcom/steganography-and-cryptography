@@ -13,7 +13,7 @@ class ShowImpl(
             if (!inputFile.exists() || !inputFile.isFile) {
                 throw Exception("Can't read input file!")
             }
-            secretImage.show(ImageIO.read(inputFile))
+            secretImage.show(request.password, ImageIO.read(inputFile))
         }
         return Show.Response(result)
     }

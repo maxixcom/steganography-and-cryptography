@@ -19,7 +19,9 @@ class CommandFactoryImpl : CommandFactory {
         return "^show$".toRegex().matchEntire(input)?.let {
             println("Input image file:")
             val inputFile = readLine()!!
-            CommandShow(inputFile)
+            println("Password:")
+            val password = readLine()!!
+            CommandShow(inputFile, password)
         }
     }
 
@@ -31,7 +33,9 @@ class CommandFactoryImpl : CommandFactory {
             val outputFile = readLine()!!
             println("Message to hide:")
             val message = readLine()!!
-            CommandHide(message, inputFile, outputFile)
+            println("Password:")
+            val password = readLine()!!
+            CommandHide(message, password, inputFile, outputFile)
         }
     }
 }

@@ -14,7 +14,7 @@ class HideImpl(
                 throw Exception("Can't read input file!")
             }
 
-            val outputImage = secretImage.hide(request.message, ImageIO.read(inputFile))
+            val outputImage = secretImage.hide(request.message, request.password, ImageIO.read(inputFile))
 
             ImageIO.write(outputImage, "png", File(request.outputFile))
         }

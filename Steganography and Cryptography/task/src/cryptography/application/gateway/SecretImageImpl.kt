@@ -3,13 +3,14 @@ package cryptography.application.gateway
 import cryptography.application.extensions.pixelForIndex
 import cryptography.domain.gateway.SecretImage
 import java.awt.image.BufferedImage
+import kotlin.experimental.xor
 
 class SecretImageImpl : SecretImage {
     companion object {
         val EOM = listOf<Byte>(0, 0, 3)
     }
 
-    override fun show(input: BufferedImage): String {
+    override fun show(password: String, input: BufferedImage): String {
         val totalPixels = input.width * input.height
 
         val data = mutableListOf<Byte>()
@@ -29,11 +30,16 @@ class SecretImageImpl : SecretImage {
                 }
             }
         }
-        return data.subList(0, data.size - EOM.size).toByteArray().toString(Charsets.UTF_8)
+        val message = xorMessage(
+            data.subList(0, data.size - EOM.size).toByteArray(),
+            password.toByteArray()
+        )
+        return message.toString(Charsets.UTF_8)
     }
 
-    override fun hide(message: String, input: BufferedImage): BufferedImage {
-        val data = message.encodeToByteArray().toMutableList()
+    override fun hide(message: String, password: String, input: BufferedImage): BufferedImage {
+        val data = xorMessage(message.encodeToByteArray(), password.encodeToByteArray())
+            .toMutableList()
         data.addAll(EOM) // End of message
         val requiredPixels = data.size * 8
         val totalPixels = input.width * input.height
@@ -61,5 +67,12 @@ class SecretImageImpl : SecretImage {
         }
 
         return output
+    }
+
+    private fun xorMessage(message: ByteArray, password: ByteArray): ByteArray {
+        val size = password.size
+        return message.mapIndexed { index, byte ->
+            byte xor password[index % size]
+        }.toByteArray()
     }
 }
